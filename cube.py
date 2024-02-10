@@ -91,3 +91,40 @@ class Cube:
                 )
 
 
+class CubeBuilder:
+    def __init__(self):
+        self.Cube = Cube()
+        self.update_front() \
+            .update_back() \
+            .update_left() \
+            .update_right() \
+            .update_upper() \
+            .update_lower()
+
+    def update_front(self, entry=None):
+        self.Cube.set_front(entry)
+        return self
+
+    def update_back(self, entry=None):
+        self.Cube.set_back(entry)
+        return self
+
+    def update_left(self, entry=None):
+        self.Cube.set_left(entry)
+        return self
+
+    def update_right(self, entry=None):
+        self.Cube.set_right(entry)
+        return self
+
+    def update_upper(self, entry=None):
+        self.Cube.set_upper(entry)
+        return self
+
+    def update_lower(self, entry=None):
+        self.Cube.set_lower(entry)
+        return self
+
+
+
+
