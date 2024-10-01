@@ -15,6 +15,6 @@ from django.urls import path
 from .views import CubeAPI, render_cube
 
 urlpatterns = [
-    path('api/cube', CubeAPI.as_view(), name='cube_api'),
+    path('api/cube/', CubeAPI.as_view(), name='cube_api'),
     path('', render_cube, name='render_cube'),
 ]

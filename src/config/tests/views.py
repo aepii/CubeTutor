@@ -11,4 +11,4 @@ class CubeAPI(APIView):
         return Response(serializer.data)
     
 def render_cube(request):
-    return render(request, 'cube_template.html')  # Serve the template
+    return render(request, 'cube_template.html')
