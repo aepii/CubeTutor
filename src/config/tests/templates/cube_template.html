@@ -1,46 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Three.js Cube</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-</head>
-<body>
-    <div id="cube-container"></div>
-    
-    <script type="text/javascript">
-        // Fetch cube data from the API
-        fetch('/api/cube/')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);  // Check if cube data is fetched successfully
+{% extends 'base.html' %}
+{% load static %}
 
-                // Initialize Three.js
-                var scene = new THREE.Scene();
-                var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-                var renderer = new THREE.WebGLRenderer();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                document.body.appendChild(renderer.domElement);
-
-                // Create a basic cube geometry
-                var geometry = new THREE.BoxGeometry();
-                var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-                var cube = new THREE.Mesh(geometry, material);
-                scene.add(cube);
-
-                camera.position.z = 5;
-
-                var animate = function () {
-                    requestAnimationFrame(animate);
-                    cube.rotation.x += 0.01;
-                    cube.rotation.y += 0.01;
-                    renderer.render(scene, camera);
-                };
-
-                animate();
-            })
-            .catch(error => console.error('Error fetching cube data:', error));
-    </script>
-</body>
-</html>
+{% block content %}
+    <div class="col-md-6 offset-md-3">
+        <h1>Cube Render</h1>
+    </div>
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.min.js"></script>
+    <script type="module" src="{% static 'js/cube_render.js' %}"></script>
+{% endblock %}
