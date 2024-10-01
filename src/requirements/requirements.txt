@@ -1,0 +1,6 @@
+Django
+djangorestframework
+numpy
+beautifulsoup4
+requests
+opencv-python
