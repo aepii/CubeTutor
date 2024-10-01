@@ -1,3 +1,5 @@
 {
-    "workinprogressignorethis": "three"
+  "dependencies": {
+    "three": "^0.169.0"
+  }
 }
