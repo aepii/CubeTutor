@@ -7,12 +7,12 @@ CubeTutor is an application designed to assist users with the Rubik’s Cube, pr
 ## Technologies Used
 
 - **Frontend**: 
-  - HTML, CSS
-  - JavaScript (for rendering with Three.js)
+  - Django templates for rendering HTML and managing the UI.
+  - JavaScript for interactivity, using Three.js for 3D visualization.
 
 - **Backend**: 
-  - Django (Python)
-  - Django REST Framework (DRF)
+  - Django
+  - Django REST Framework
 
 ## Core Functionality
 
