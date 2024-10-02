@@ -1,4 +1,4 @@
-import * as THREE from './three.module.js';
+import * as THREE from 'three';
 import {fetchCubeData, rotateCube} from './cube_api.js';
 import {VALUE_TO_COLOR, FACE_GENERATION_ORDER, CUBE_MAP} from './cube_constants.js';
 

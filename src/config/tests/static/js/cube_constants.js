@@ -1,4 +1,4 @@
-import * as THREE from './three.module.js';
+import * as THREE from 'three';
 
 export const VALUE_TO_COLOR = {
     0: new THREE.Color("gray"),
