@@ -15,16 +15,48 @@ const VALUETOCOLOR = {
 const CUBIEFACEORDER = ['right', 'left', 'top', 'bottom', 'front', 'back']
 
 // Cube map
+/*
+(Position): {face: [index]}
+*/
 const CUBEMAP = {
-    "(-1,-1,-1)": { "front": 1, "left": 3, "bottom": 6},
-    "(0,-1,-1)": { "front": 1, "bottom": 6},
-    "(1,-1,-1)": { "front": 1, "right": 4, "bottom": 6},
-    "(-1,0,-1)": { "front": 1, "left": 3},
-    "(0,0,-1)": { "front": 1},
-    "(1,0,-1)": { "front": 1, "right": 4},
-    "(-1,1,-1)": { "front": 1, "left": 3, "top": 5},
-    "(0,1,-1)": { "front": 1, "top": 5},
-    "(1,1,-1)": { "front": 1, "right": 4, "top": 5}
+    // Negative Slice
+    "(-1,-1,-1)": {"back": [2,2], "left": [2,0], "bottom": [2,0]},
+    "(0,-1,-1)": {"back": [2,1], "bottom": [2,1]},
+    "(1,-1,-1)": {"back": [2,0], "right": [2,2], "bottom": [2,2]},
+
+    "(-1,0,-1)": {"back": [1,2], "left": [1,0]},
+    "(0,0,-1)": {"back": [1,1]},
+    "(1,0,-1)": {"back": [1,0], "right": [1,2]},
+
+    "(-1,1,-1)": {"back": [0,2], "left": [0,0], "top": [0,0]},
+    "(0,1,-1)": {"back": [0,1], "top": [0,1]},
+    "(1,1,-1)": {"back": [0,0], "right": [0,2], "top": [0,2]},
+
+    // Neutral Slice
+    "(-1,-1,0)": {"left": [2,1], "bottom": [1,0]},
+    "(0,-1,0)": {"bottom": [1,1]},
+    "(1,-1,0)": {"right": [2,1], "bottom": [1,2]},
+
+    "(-1,0,0)": {"left": [1,1]},
+    "(0,0,0)": {},
+    "(1,0,0)": {"right": [1,1]},
+
+    "(-1,1,0)": {"left": [0,1], "top": [1,0]},
+    "(0,1,0)": {"top": [1,1]},
+    "(1,1,0)": {"right": [0,1], "top": [1,2]},
+
+    // Positive Slice
+    "(-1,-1,1)": {"front": [2,0], "left": [2,2], "bottom": [0,0]},
+    "(0,-1,1)": {"front": [2,1], "bottom": [0,1]},
+    "(1,-1,1)": {"front": [2,2], "right": [2,0], "bottom": [0,2]},
+
+    "(-1,0,1)": {"front": [1,0], "left": [1,2]},
+    "(0,0,1)": {"front": [1,1]},
+    "(1,0,1)": {"front": [1,2], "right": [1,0]},
+
+    "(-1,1,1)": {"front": [0,0], "left": [0,2], "top": [2,0]},
+    "(0,1,1)": {"front": [0,1], "top": [2,1]},
+    "(1,1,1)": {"front": [0,2], "right": [0,0], "top": [2,2]},
 };
 
 // Set up Scene and Camera
@@ -39,7 +71,7 @@ document.body.appendChild(renderer.domElement);
 // Create a Cube
 const cube = new THREE.Group();
 
-const createCubie = (position) => {
+const createCubie = (cubeData, position) => {
 
     // Create Cubie
     const geometry = new THREE.BoxGeometry().toNonIndexed(); // Non-indexed Geometry
@@ -56,13 +88,22 @@ const createCubie = (position) => {
     let genPointer = 0
     for (let i = 0; i < positionAttribute.count; i += 6){
 
+        let value;
+
         const currentCubieFace = CUBIEFACEORDER[genPointer];
         const key = `(${position[0]},${position[1]},${position[2]})`;
         const colorsDict = CUBEMAP[key] || {};
 
-        const value = colorsDict[currentCubieFace] || 0;
-        
+        const [col, row] = colorsDict[currentCubieFace] || [-1, -1];
+
+        if (col == -1){
+            value = 0
+        }else{
+            value = cubeData.faces[currentCubieFace][col][row]
+        };
+
         const color = VALUETOCOLOR[value];
+
         console.log(color, position, currentCubieFace);
         for(let j =0; j < 6; j+= 1) {
             colors.push(color.r, color.g, color.b); 
@@ -76,16 +117,16 @@ const createCubie = (position) => {
     cube.add(cubie)
 };
 
-const createPlane = (j) => {
+const createPlane = (cubeData, j) => {
     for (let i = 0; i < 9; i+=1){
         const position = [(i%3)-1,Math.floor(i/3)-1,(j%3)-1];
-        createCubie(position);
+        createCubie(cubeData, position);
     };
 };
 
 const createCube = (cubeData) => {
-    for (let i = 0; i < 1; i+=1){
-        createPlane(i)
+    for (let i = 0; i < 3; i+=1){
+        createPlane(cubeData, i)
     };
 };
 
@@ -99,15 +140,15 @@ fetch('/api/cube/')
 
 scene.add(cube); 
 
+//camera.position.x = 2.5;
+//camera.position.y = 2.5;
 camera.position.z = 5;
-camera.position.y = -2.5;
-camera.position.x = -2.5;
 
 
 const animate = function () {
     requestAnimationFrame(animate);
-    //cube.rotation.x -= 0.01; // Rotate around the x-axis
-    //cube.rotation.y -= 0.01; // Rotate around the y-axis
+    cube.rotation.x -= 0.01; // Rotate around the x-axis
+    cube.rotation.y -= 0.01; // Rotate around the y-axis
     renderer.render(scene, camera);
 };
 
