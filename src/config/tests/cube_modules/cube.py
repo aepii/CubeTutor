@@ -29,3 +29,4 @@ class Cube:
             self.faces[face] = default_matrices[face]
         else:
             self.faces[face] = entry
+

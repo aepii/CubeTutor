@@ -11,6 +11,22 @@ const VALUETOCOLOR = {
     6: new THREE.Color("yellow") // default bottom 
 };
 
+// The order in which faces on a cubie are generated
+const CUBIEFACEORDER = ['right', 'left', 'top', 'bottom', 'front', 'back']
+
+// Cube map
+const CUBEMAP = {
+    "(-1,-1,-1)": { "front": 1, "left": 3, "bottom": 6},
+    "(0,-1,-1)": { "front": 1, "bottom": 6},
+    "(1,-1,-1)": { "front": 1, "right": 4, "bottom": 6},
+    "(-1,0,-1)": { "front": 1, "left": 3},
+    "(0,0,-1)": { "front": 1},
+    "(1,0,-1)": { "front": 1, "right": 4},
+    "(-1,1,-1)": { "front": 1, "left": 3, "top": 5},
+    "(0,1,-1)": { "front": 1, "top": 5},
+    "(1,1,-1)": { "front": 1, "right": 4, "top": 5}
+};
+
 // Set up Scene and Camera
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -24,7 +40,7 @@ document.body.appendChild(renderer.domElement);
 const cube = new THREE.Group();
 
 const createCubie = (position) => {
-    console.log(position);
+
     // Create Cubie
     const geometry = new THREE.BoxGeometry().toNonIndexed(); // Non-indexed Geometry
     const material = new THREE.MeshBasicMaterial({ vertexColors: true }); // Create material with vertex color support
@@ -37,12 +53,21 @@ const createCubie = (position) => {
     const colors = []; // Array to hold colors
 
     // Create an array to hold vertex colors
-    for (let i = 0; i < positionAttribute.count; i += 6) {
-        const color = VALUETOCOLOR[(i/6)%6+1];
+    let genPointer = 0
+    for (let i = 0; i < positionAttribute.count; i += 6){
 
+        const currentCubieFace = CUBIEFACEORDER[genPointer];
+        const key = `(${position[0]},${position[1]},${position[2]})`;
+        const colorsDict = CUBEMAP[key] || {};
+
+        const value = colorsDict[currentCubieFace] || 0;
+        
+        const color = VALUETOCOLOR[value];
+        console.log(color, position, currentCubieFace);
         for(let j =0; j < 6; j+= 1) {
             colors.push(color.r, color.g, color.b); 
         };
+        genPointer += 1
     };
 
     // Set the color attribute in geometry
@@ -58,21 +83,31 @@ const createPlane = (j) => {
     };
 };
 
-const createCube = () => {
-    for (let i = 0; i < 3; i+=1){
+const createCube = (cubeData) => {
+    for (let i = 0; i < 1; i+=1){
         createPlane(i)
     };
 };
 
-createCube();
+fetch('/api/cube/')
+        .then(response => response.json())
+        .then(cubeData => {
+            console.log("GOT CUBE")
+            createCube(cubeData);
+        })
+        .catch(error => console.error('Error fetching cube data:', error));
+
 scene.add(cube); 
 
 camera.position.z = 5;
+camera.position.y = -2.5;
+camera.position.x = -2.5;
+
 
 const animate = function () {
     requestAnimationFrame(animate);
-    cube.rotation.x += 0.01; // Rotate around the x-axis
-    cube.rotation.y += 0.01; // Rotate around the y-axis
+    //cube.rotation.x -= 0.01; // Rotate around the x-axis
+    //cube.rotation.y -= 0.01; // Rotate around the y-axis
     renderer.render(scene, camera);
 };
 
