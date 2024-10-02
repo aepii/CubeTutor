@@ -28,6 +28,19 @@ class CubeAPI(APIView):
             print("POST:", serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
+class CubeRotationsAPI(APIView):
+
+    cube = Cube(empty=False)
+
+    def post(self, request, format=None):
+        if 'face' in request.data:
+            face = request.data['face']
+            #self.cube.rotate_face(face, direction) 
+            serializer = CubeSerializer({'faces': self.cube.faces})
+            print("POST:", request.data['face'])
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 def render_cube(request):
     return render(request, 'cube_template.html')

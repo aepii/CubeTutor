@@ -12,9 +12,10 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import CubeAPI, render_cube
+from .views import CubeAPI, CubeRotationsAPI, render_cube
 
 urlpatterns = [
     path('api/cube/', CubeAPI.as_view(), name='cube_api'),
+    path('api/cube/rotate/', CubeRotationsAPI.as_view(), name='cube_rotations_api'),
     path('', render_cube, name='render_cube'),
 ]

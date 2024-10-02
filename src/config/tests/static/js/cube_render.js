@@ -1,136 +1,99 @@
 import * as THREE from './three.module.js';
+import {fetchCubeData, rotateCube} from './cube_api.js';
+import {VALUE_TO_COLOR, FACE_GENERATION_ORDER, CUBE_MAP} from './cube_constants.js';
 
-// Color map
-const VALUETOCOLOR = {
-    0: new THREE.Color("gray"), // gray
-    1: new THREE.Color("green"), // default front
-    2: new THREE.Color("blue"), // default back 
-    3: new THREE.Color("orange"), // default left 
-    4: new THREE.Color("red"), // default right 
-    5: new THREE.Color("white"), // default top 
-    6: new THREE.Color("yellow") // default bottom 
+// API
+
+fetchCubeData()
+    .then(cubeData => {
+        console.log("FETCH");
+        createCube(cubeData);
+    });
+
+// Call this function when the rotation is finished
+const onRotationComplete = async (face) => {
+    const updatedCubeData = await rotateCube(face);
+    console.log('Updated cube:', updatedCubeData);
+    // Optionally update the cube state on the front end
 };
-
-// The order in which faces on a cubie are generated
-const CUBIEFACEORDER = ['right', 'left', 'top', 'bottom', 'front', 'back']
-
-// Cube map
-/*
-(Position): {face: [index]}
-*/
-const CUBEMAP = {
-    // Negative Slice
-    "(-1,-1,-1)": {"back": [2,2], "left": [2,0], "bottom": [2,0]},
-    "(0,-1,-1)": {"back": [2,1], "bottom": [2,1]},
-    "(1,-1,-1)": {"back": [2,0], "right": [2,2], "bottom": [2,2]},
-
-    "(-1,0,-1)": {"back": [1,2], "left": [1,0]},
-    "(0,0,-1)": {"back": [1,1]},
-    "(1,0,-1)": {"back": [1,0], "right": [1,2]},
-
-    "(-1,1,-1)": {"back": [0,2], "left": [0,0], "top": [0,0]},
-    "(0,1,-1)": {"back": [0,1], "top": [0,1]},
-    "(1,1,-1)": {"back": [0,0], "right": [0,2], "top": [0,2]},
-
-    // Neutral Slice
-    "(-1,-1,0)": {"left": [2,1], "bottom": [1,0]},
-    "(0,-1,0)": {"bottom": [1,1]},
-    "(1,-1,0)": {"right": [2,1], "bottom": [1,2]},
-
-    "(-1,0,0)": {"left": [1,1]},
-    "(0,0,0)": {},
-    "(1,0,0)": {"right": [1,1]},
-
-    "(-1,1,0)": {"left": [0,1], "top": [1,0]},
-    "(0,1,0)": {"top": [1,1]},
-    "(1,1,0)": {"right": [0,1], "top": [1,2]},
-
-    // Positive Slice
-    "(-1,-1,1)": {"front": [2,0], "left": [2,2], "bottom": [0,0]},
-    "(0,-1,1)": {"front": [2,1], "bottom": [0,1]},
-    "(1,-1,1)": {"front": [2,2], "right": [2,0], "bottom": [0,2]},
-
-    "(-1,0,1)": {"front": [1,0], "left": [1,2]},
-    "(0,0,1)": {"front": [1,1]},
-    "(1,0,1)": {"front": [1,2], "right": [1,0]},
-
-    "(-1,1,1)": {"front": [0,0], "left": [0,2], "top": [2,0]},
-    "(0,1,1)": {"front": [0,1], "top": [2,1]},
-    "(1,1,1)": {"front": [0,2], "right": [0,0], "top": [2,2]},
-};
-
-const pivot = new THREE.Object3D();
-var activeGroup = [];
 
 // Set up Scene and Camera
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x003632)
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
+camera.position.x = -2;
+camera.position.y = 2;
+camera.position.z = 7.5;
+
 // Create and setup Renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+// Array to hold all cubies
 const allCubies = [];
+// Pivot which holds the cubies affected by a rotation
+const pivot = new THREE.Object3D();
+// Cubies to be rotated
+const activeGroup = [];
 
+// Create a cubie
 const createCubie = (cubeData, position) => {
-
-    // Create Cubie
-    const geometry = new THREE.BoxGeometry().toNonIndexed(); // Non-indexed Geometry
-    const material = new THREE.MeshBasicMaterial({vertexColors: true }); // Create material with vertex color support
-    const cubie = new THREE.Mesh(geometry, material); // Create a mesh for cubie
+    const cubie = createCubieMesh(position);
+    const colors = generateCubieColors(cubeData, position);
+    setCubieColors(cubie.geometry, colors);
+    addEdgesToCubie(cubie, position);
     
-    cubie.position.set(...position);
-
-    // Generate color data for each vertex
-    const positionAttribute = geometry.getAttribute('position'); // Get position attribute
-    const colors = []; // Array to hold colors
-
-    // Create an array to hold vertex colors
-    let genPointer = 0
-    for (let i = 0; i < positionAttribute.count; i += 6){
-
-        let value;
-
-        const currentCubieFace = CUBIEFACEORDER[genPointer];
-        const key = `(${position[0]},${position[1]},${position[2]})`;
-        const colorsDict = CUBEMAP[key] || {};
-
-        const [col, row] = colorsDict[currentCubieFace] || [-1, -1];
-
-        if (col == -1){
-            value = 0
-        }else{
-            value = cubeData.faces[currentCubieFace][col][row]
-        };
-
-        const color = VALUETOCOLOR[value];
-
-        for(let j =0; j < 6; j+= 1) {
-            colors.push(color.r, color.g, color.b); 
-        };
-        genPointer += 1
-    };
-    
-    // Set the color attribute in geometry
-    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
-    // Add cubie and outline to the cube group
-    scene.add(cubie);
-
-    // Create the box's edges and add them to the scene
-    const edges = new THREE.EdgesGeometry(geometry);
-    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: '#000000'}));
-    line.position.set(...position)
-
-    cubie.attach(line);
-
+    // TEMPORARY FOR TESTING
     if(activeGroup.length != 9 && position[2] == 1){
         activeGroup.push(cubie);
     }
 
     allCubies.push(cubie);
+};
+
+const createCubieMesh = (position) => {
+    const geometry = new THREE.BoxGeometry().toNonIndexed();
+    const material = new THREE.MeshBasicMaterial({ vertexColors: true });
+    const cubie = new THREE.Mesh(geometry, material);
+    cubie.position.set(...position);
+    scene.add(cubie);
+    return cubie;
+};
+
+const generateCubieColors = (cubeData, position) => {
+    const colors = [];
+    const positionAttribute = new THREE.BoxGeometry().toNonIndexed().getAttribute('position'); // Create temp geometry for attribute
+    let faceIndex = 0;
+
+    for (let i = 0; i < positionAttribute.count; i += 6) {
+        const currentCubieFace = FACE_GENERATION_ORDER[faceIndex];
+        const key = `(${position[0]},${position[1]},${position[2]})`;
+        const colorsDict = CUBE_MAP[key] || {};
+        const [col, row] = colorsDict[currentCubieFace] || [-1, -1];
+
+        const value = col === -1 ? 0 : cubeData.faces[currentCubieFace][col][row];
+        const color = VALUE_TO_COLOR[value];
+
+        for (let j = 0; j < 6; j += 1) {
+            colors.push(color.r, color.g, color.b);
+        }
+        faceIndex += 1;
+    }
+
+    return colors;
+};
+
+const setCubieColors = (geometry, colors) => {
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+};
+
+const addEdgesToCubie = (cubie, position) => {
+    const edges = new THREE.EdgesGeometry(cubie.geometry);
+    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: '#000000' }));
+    line.position.set(...position);
+    cubie.attach(line);
 };
 
 const createPlane = (cubeData, j) => {
@@ -144,42 +107,55 @@ const createCube = (cubeData) => {
     for (let i = 0; i < 3; i+=1){
         createPlane(cubeData, i)
     };
+    attachCubiesToPivot();
+    render(0.01);
 };
 
-fetch('/api/cube/')
-        .then(response => response.json())
-        .then(cubeData => {
-            createCube(cubeData);
-        })
-        .catch(error => console.error('Error fetching cube data:', error));
+let isRotationComplete = false; // Track if rotation is done
 
-camera.position.x = 2.5;
-camera.position.y = 2.5;
-camera.position.z = 7.5;
-
+// Temporary Rotation only rotates z axis
 const rotate = (rotationSpeed) => {
-    pivot.updateMatrixWorld();
+    // Rotate only if the current rotation is less than Math.PI / 2
+    if (pivot.rotation.z < Math.PI / 2) {
+        // Increment the rotation, but clamp it to a maximum of Math.PI / 2
+        pivot.rotation.z = Math.min(pivot.rotation.z + rotationSpeed, Math.PI / 2);
+    } else {
+        // Ensure the final rotation is exactly Math.PI / 2
+        pivot.rotation.z = Math.PI / 2;
+        isRotationComplete = true;
+        pivot.clear()
+        for (let i in activeGroup) {
+            console.log(activeGroup[i].rotation)
+            scene.add(activeGroup[i]);
+        }
 
-    for (var i in activeGroup) {
-        pivot.attach(activeGroup[i]);
+        //console.log(pivot,"Rotation complete");
+        onRotationComplete('front')
     }
 
-    console.log(pivot.position);
-    pivot.rotation.z += rotationSpeed; // Increment the rotation
-
-
     pivot.updateMatrixWorld();
+};
 
-    for (var i in activeGroup) {
-        scene.attach(activeGroup[i]);
+// Attach cubies to the pivot once before starting the animation
+const attachCubiesToPivot = () => {
+    pivot.position.set(0, 0, 0); // Make sure pivot is at the origin
+    pivot.rotation.set(0, 0, 0);
+    pivot.updateMatrixWorld();
+    scene.add(pivot); // Add pivot to the scene
+    // Attach cubies to the pivot only once
+    for (let i in activeGroup) {
+        console.log(activeGroup[i].rotation)
+        pivot.add(activeGroup[i]);
     }
-}
+};
 
-const animate = function (rotationSpeed) {
-    requestAnimationFrame(animate);
-    console.log(allCubies, activeGroup);
-    rotate(0.001);
+// Animate function remains mostly the same
+const render = function (rotationSpeed) {
+    requestAnimationFrame(() => render(rotationSpeed));
+    if (!isRotationComplete) {
+        rotate(rotationSpeed); // Only rotate if not complete
+    }
+
     renderer.render(scene, camera);
 };
 
-animate();
