@@ -59,6 +59,9 @@ const CUBEMAP = {
     "(1,1,1)": {"front": [0,2], "right": [0,0], "top": [2,2]},
 };
 
+const pivot = new THREE.Object3D();
+var activeGroup = [];
+
 // Set up Scene and Camera
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x003632)
@@ -69,14 +72,13 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Create a Cube
-const cube = new THREE.Group();
+const allCubies = [];
 
 const createCubie = (cubeData, position) => {
 
     // Create Cubie
     const geometry = new THREE.BoxGeometry().toNonIndexed(); // Non-indexed Geometry
-    const material = new THREE.MeshBasicMaterial({ vertexColors: true }); // Create material with vertex color support
+    const material = new THREE.MeshBasicMaterial({vertexColors: true }); // Create material with vertex color support
     const cubie = new THREE.Mesh(geometry, material); // Create a mesh for cubie
     
     cubie.position.set(...position);
@@ -105,17 +107,30 @@ const createCubie = (cubeData, position) => {
 
         const color = VALUETOCOLOR[value];
 
-        console.log(color, position, currentCubieFace);
         for(let j =0; j < 6; j+= 1) {
             colors.push(color.r, color.g, color.b); 
         };
         genPointer += 1
     };
-
+    
     // Set the color attribute in geometry
     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
-    cube.add(cubie)
+    // Add cubie and outline to the cube group
+    scene.add(cubie);
+
+    // Create the box's edges and add them to the scene
+    const edges = new THREE.EdgesGeometry(geometry);
+    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: '#000000'}));
+    line.position.set(...position)
+
+    cubie.attach(line);
+
+    if(activeGroup.length != 9 && position[2] == 1){
+        activeGroup.push(cubie);
+    }
+
+    allCubies.push(cubie);
 };
 
 const createPlane = (cubeData, j) => {
@@ -134,22 +149,36 @@ const createCube = (cubeData) => {
 fetch('/api/cube/')
         .then(response => response.json())
         .then(cubeData => {
-            console.log("GOT CUBE")
             createCube(cubeData);
         })
         .catch(error => console.error('Error fetching cube data:', error));
 
-scene.add(cube); 
+camera.position.x = 2.5;
+camera.position.y = 2.5;
+camera.position.z = 7.5;
 
-//camera.position.x = 2.5;
-//camera.position.y = 2.5;
-camera.position.z = 5;
+const rotate = (rotationSpeed) => {
+    pivot.updateMatrixWorld();
+
+    for (var i in activeGroup) {
+        pivot.attach(activeGroup[i]);
+    }
+
+    console.log(pivot.position);
+    pivot.rotation.z += rotationSpeed; // Increment the rotation
 
 
-const animate = function () {
+    pivot.updateMatrixWorld();
+
+    for (var i in activeGroup) {
+        scene.attach(activeGroup[i]);
+    }
+}
+
+const animate = function (rotationSpeed) {
     requestAnimationFrame(animate);
-    cube.rotation.x -= 0.01; // Rotate around the x-axis
-    cube.rotation.y -= 0.01; // Rotate around the y-axis
+    console.log(allCubies, activeGroup);
+    rotate(0.001);
     renderer.render(scene, camera);
 };
 
