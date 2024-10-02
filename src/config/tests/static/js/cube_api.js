@@ -9,14 +9,14 @@ export const fetchCubeData = async () => {
 };
 
 // Function to rotate the cube
-export const rotateCube = async (face) => {
+export const rotateCube = async (face, clockwise) => {
     try {
         const response = await fetch('/api/cube/rotate/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ face })
+            body: JSON.stringify({face, clockwise})
         });
         if (!response.ok) throw new Error('Network response was not ok');
         return await response.json();

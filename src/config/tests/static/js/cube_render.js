@@ -11,8 +11,8 @@ fetchCubeData()
     });
 
 // Call this function when the rotation is finished
-const onRotationComplete = async (face) => {
-    const updatedCubeData = await rotateCube(face);
+const onRotationComplete = async (face, clockwise) => {
+    const updatedCubeData = await rotateCube(face, clockwise);
     console.log('Updated cube:', updatedCubeData);
     // Optionally update the cube state on the front end
 };
@@ -123,14 +123,16 @@ const rotate = (rotationSpeed) => {
         // Ensure the final rotation is exactly Math.PI / 2
         pivot.rotation.z = Math.PI / 2;
         isRotationComplete = true;
+
+        /*
         pivot.clear()
         for (let i in activeGroup) {
             console.log(activeGroup[i].rotation)
             scene.add(activeGroup[i]);
-        }
+        }*/
 
         //console.log(pivot,"Rotation complete");
-        onRotationComplete('front')
+        onRotationComplete('front', false)
     }
 
     pivot.updateMatrixWorld();

@@ -7,12 +7,12 @@ from rest_framework import status
 
 import numpy
 
+cube = Cube(empty=False)
+
 class CubeAPI(APIView):
 
-    cube = Cube(empty=False)
-
     def get(self, request, format=None):
-        serializer = CubeSerializer({'faces': self.cube.faces})
+        serializer = CubeSerializer({'faces': cube.faces})
         print("GET:", serializer.data)
         return Response(serializer.data)
     
@@ -23,7 +23,7 @@ class CubeAPI(APIView):
 
             for face, array in updated_faces.items():
                 entry = numpy.array(array)
-                self.cube.set_face(face, entry)
+                cube.set_face(face, entry)
 
             print("POST:", serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -31,16 +31,14 @@ class CubeAPI(APIView):
 
 class CubeRotationsAPI(APIView):
 
-    cube = Cube(empty=False)
-
     def post(self, request, format=None):
-        if 'face' in request.data:
-            face = request.data['face']
-            #self.cube.rotate_face(face, direction) 
-            serializer = CubeSerializer({'faces': self.cube.faces})
-            print("POST:", request.data['face'])
+        if 'face' and 'clockwise' in request.data:
+            face, clockwise = request.data['face'], request.data['clockwise']
+            cube.rotate_face(face, clockwise) 
+            serializer = CubeSerializer({'faces': cube.faces})
+            print("POST:", request.data['face'], cube.faces)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Invalid rotation data'}, status=status.HTTP_400_BAD_REQUEST)
     
 def render_cube(request):
     return render(request, 'cube_template.html')
