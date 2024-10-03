@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {fetchCubeData, rotateCube} from './cube_api.js';
-import {VALUE_TO_COLOR, FACE_GENERATION_ORDER, CUBE_MAP} from './cube_constants.js';
+import {VALUE_TO_COLOR, FACE_GENERATION_ORDER, CUBE_MAP, FACE_AXIS} from './cube_constants.js';
 
 // API
 
@@ -24,7 +24,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 
 camera.position.x = -2;
 camera.position.y = 2;
-camera.position.z = 7.5;
+camera.position.z = 7;
 
 // Create and setup Renderer
 const renderer = new THREE.WebGLRenderer();
@@ -91,7 +91,7 @@ const setCubieColors = (geometry, colors) => {
 
 const addEdgesToCubie = (cubie, position) => {
     const edges = new THREE.EdgesGeometry(cubie.geometry);
-    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: '#000000' }));
+    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: '#000000'}));
     line.position.set(...position);
     cubie.attach(line);
 };
@@ -114,16 +114,11 @@ const createCube = (cubeData) => {
 let isRotationComplete = false; // Track if rotation is done
 
 // Temporary Rotation only rotates z axis
-const rotate = (rotationSpeed) => {
+const rotate = (axis, direction, rotationSpeed) => {
     // Rotate only if the current rotation is less than Math.PI / 2
-    if (pivot.rotation.z < Math.PI / 2) {
-        // Increment the rotation, but clamp it to a maximum of Math.PI / 2
-        pivot.rotation.z = Math.min(pivot.rotation.z + rotationSpeed, Math.PI / 2);
-    } else {
-        // Ensure the final rotation is exactly Math.PI / 2
-        pivot.rotation.z = Math.PI / 2;
+    if (pivot.rotation[axis] >= Math.PI / 2) {
+        pivot.rotation[axis] = Math.PI / 2;
         isRotationComplete = true;
-
         /*
         pivot.clear()
         for (let i in activeGroup) {
@@ -133,6 +128,12 @@ const rotate = (rotationSpeed) => {
 
         //console.log(pivot,"Rotation complete");
         onRotationComplete('front', false)
+    } else if (pivot.rotation[axis] <= Math.PI / -2) {
+        pivot.rotation[axis] = Math.PI / -2;
+        isRotationComplete = true;
+        onRotationComplete('front', true)
+    } else {
+        pivot.rotation[axis] += (direction * rotationSpeed)
     }
 
     pivot.updateMatrixWorld();
@@ -155,7 +156,7 @@ const attachCubiesToPivot = () => {
 const render = function (rotationSpeed) {
     requestAnimationFrame(() => render(rotationSpeed));
     if (!isRotationComplete) {
-        rotate(rotationSpeed); // Only rotate if not complete
+        rotate(FACE_AXIS['front'], -1, rotationSpeed); // Only rotate if not complete
     }
 
     renderer.render(scene, camera);

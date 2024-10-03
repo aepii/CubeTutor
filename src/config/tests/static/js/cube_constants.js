@@ -41,3 +41,12 @@ export const CUBE_MAP = {
     "(0,1,1)": {"front": [0,1], "top": [2,1]},
     "(1,1,1)": {"front": [0,2], "right": [0,0], "top": [2,2]}
 };
+
+export const FACE_AXIS = {
+    'front': 'z',
+    'back': 'z',
+    'left': 'x',
+    'right': 'x',
+    'top': 'y',
+    'down': 'y',
+};
