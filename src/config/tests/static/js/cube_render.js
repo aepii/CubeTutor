@@ -70,10 +70,13 @@ export class CubeRender{
     }
     
     #redrawCube(){
-        this.scene.clear()
-        this.pivot.clear()
-        this.allCubies = []
-        this.createCube()
+        this.allCubies.forEach(cubie => {
+            this.scene.remove(cubie);
+        });
+        this.allCubies = [];
+        this.pivot.clear();
+        this.scene.remove(this.pivot);
+        this.createCube();
     }
 
     // Attach cubies to the pivot once before starting the animation
@@ -109,7 +112,7 @@ export class CubeRender{
         // Creates a mesh for the cubie
         const createCubieMesh = (position) => {
             const geometry = new THREE.BoxGeometry().toNonIndexed();
-            const material = new THREE.MeshBasicMaterial({ vertexColors: true });
+            const material = new THREE.MeshPhongMaterial({ vertexColors: true });
             const cubie = new THREE.Mesh(geometry, material);
 
             cubie.position.set(...position);
@@ -155,6 +158,8 @@ export class CubeRender{
         const addEdgesToCubie = (cubie, position) => {
             const edges = new THREE.EdgesGeometry(cubie.geometry);
             const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: '#000000' }));
+            cubie.castShadow = true;
+            cubie.receiveShadow = true;
             line.position.set(...position);
             cubie.attach(line);
         };
