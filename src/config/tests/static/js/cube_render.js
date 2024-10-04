@@ -7,29 +7,28 @@ export class CubeRender{
         this.scene = scene;
         this.cubeData = cubeData;
 
-        this.faceMoving;
-        this.directionMoving;
+        this.currentFaceMoving;
+        this.isClockwise;
 
-        this.rotationSpeed = 0.005
+        this.rotationSpeed = 0.01
         this.allCubies = [];
         this.pivot = new THREE.Object3D();
-        this.isMoveComplete = true;
+        this.isMoving = false;
     };
 
     // Creates a cube, which holds 3 planes/27 cubies
     createCube(){
-        console.log("FROM CREATE CUBE", this.cubeData);
         for (let i = 0; i < 3; i+=1){
             this.#createPlane(i);
         }
     };
 
     doMove(face, direction){
-        if (this.isMoveComplete) {
-            this.#attachCubiesToPivot(face);
-            this.isMoveComplete = false
-            this.faceMoving = face
-            this.directionMoving = direction
+        if (!this.isMoving) {
+            this.#attachCubiesupperivot(face);
+            this.isMoving = true
+            this.currentFaceMoving = face
+            this.isClockwise = direction ? 1 : 0
             return true
         } else {
             return false
@@ -38,32 +37,38 @@ export class CubeRender{
 
     // Temporary Rotation only rotates z axis
     animRotate(){
-        const axis = FACE_AXIS[this.faceMoving];
+        const [axis, coordinate] = FACE_AXIS[this.currentFaceMoving];
         if (this.pivot.rotation[axis] >= Math.PI / 2) {
+            console.log(this.pivot.rotation[axis])
             this.pivot.rotation[axis] = Math.PI / 2;
+            this.isMoving = false
             this.#animComplete()
         } else if (this.pivot.rotation[axis] <= Math.PI / -2) {
+            console.log(this.pivot.rotation[axis])
             this.pivot.rotation[axis] = Math.PI / -2;
+            this.isMoving = false
             this.#animComplete()
         } else {
-            this.pivot.rotation[axis] += (this.directionMoving * this.rotationSpeed);
+            this.pivot.rotation[axis] += (-this.isClockwise * coordinate * this.rotationSpeed);
         }
 
         this.pivot.updateMatrixWorld();
         
-        return this.isMoveComplete;
+        return this.isMoving;
     };
 
-    #animComplete(){
-        callCubeRotation(this.faceMoving, true)
-        this.isMoveComplete = true;
+    async #animComplete() {
+        // Wait for cube rotation to complete
+        await callCubeRotation(this.currentFaceMoving, true); 
+        
         fetchCubeData()
         .then(cubeData => {
-            this.cubeData = cubeData
-            this.#redrawCube();
+            this.cubeData = cubeData;
+            console.log("FETCHED:", this.cubeData.faces['upper']);
+            this.#redrawCube(); 
         });
     }
-
+    
     #redrawCube(){
         this.scene.clear()
         this.pivot.clear()
@@ -72,15 +77,14 @@ export class CubeRender{
     }
 
     // Attach cubies to the pivot once before starting the animation
-    #attachCubiesToPivot(face){
-        console.log(this.cubeData);
+    #attachCubiesupperivot(face){
         this.pivot.clear();
-        const axis = FACE_AXIS[face]
+        const [axis, coordinate] = FACE_AXIS[face]
         // Add cubies to active group, Temporary
         for (let i = 0; i < this.allCubies.length ; i += 1) {
             const cubie = this.allCubies[i]
             const position = cubie.position
-            if (this.pivot.children.length != 9 && position[axis] == 1){
+            if (this.pivot.children.length != 9 && position[axis] == coordinate){
                 this.pivot.add(cubie)
             }
         }

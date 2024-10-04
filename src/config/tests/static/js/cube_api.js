@@ -1,4 +1,5 @@
 export const fetchCubeData = async () => {
+    console.log("FETCH API")
     try {
         const response = await fetch('/api/cube/');
         if (!response.ok) throw new Error('Network response was not ok');
@@ -10,6 +11,7 @@ export const fetchCubeData = async () => {
 
 // Function to rotate the cube
 export const callCubeRotation = async (face, clockwise) => {
+    console.log("POST API")
     try {
         const response = await fetch('/api/cube/rotate/', {
             method: 'POST',
