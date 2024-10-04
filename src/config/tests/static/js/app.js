@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {KEY_TO_FACE} from './cube_constants.js';
 import {CubeRender} from './cube_render.js';
 import {fetchCubeData} from './cube_api.js';
@@ -10,8 +10,8 @@ scene.background = new THREE.Color(0x003632);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight);
 
 camera.position.x = 5 * Math.sin(Math.PI/4); // X position
-camera.position.y = 5 * Math.sin(Math.PI/4); // Y position
-camera.position.z = 5 * Math.cos(Math.PI/6); // Z position
+camera.position.y = 5 * Math.sin(Math.PI/6); // Y position
+camera.position.z = 5 * Math.cos(Math.PI/4); // Z position
 
 // Make the camera look at the center of the scene
 camera.lookAt(0, 0, 0);
@@ -22,15 +22,15 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // Set up lighting
-const ambientLight = new THREE.AmbientLight(0xe0e0e0, Math.PI); // Soft white light
+const ambientLight = new THREE.AmbientLight("white", Math.PI/1.5);
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xe0e0e0, Math.PI);
-directionalLight.position.set(5, 5, 5); // Position the light
+const directionalLight = new THREE.DirectionalLight("white", .5);
 scene.add(directionalLight);
 
 // Set up controls
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.enablePan = false
 
 let cubeRender;
 let isMoving = false;
@@ -46,6 +46,7 @@ fetchCubeData()
 // Render scene
 const render = function () {
     requestAnimationFrame(() => render());
+    directionalLight.position.copy(camera.position);
     if (isMoving){
         isMoving = cubeRender.animRotate()
     }

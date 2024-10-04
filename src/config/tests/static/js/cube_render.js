@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {fetchCubeData, callCubeRotation} from './cube_api.js'; 
-import {VALUE_TO_COLOR, FACE_GENERATION_ORDER, CUBE_MAP, FACE_AXIS} from './cube_constants.js';
+import {VALUE_TO_COLOR, FACE_GENERATION_ORDER, CUBE_MAP, FACE_AXIS, GAP} from './cube_constants.js';
 
 export class CubeRender{
     constructor(scene, cubeData){
@@ -25,7 +25,7 @@ export class CubeRender{
 
     doMove(face, direction){
         if (!this.isMoving) {
-            this.#attachCubiesupperivot(face);
+            this.#attachCubiesToPivot(face);
             this.isMoving = true
             this.currentFaceMoving = face
             this.isClockwise = direction ? 1 : 0
@@ -39,12 +39,10 @@ export class CubeRender{
     animRotate(){
         const [axis, coordinate] = FACE_AXIS[this.currentFaceMoving];
         if (this.pivot.rotation[axis] >= Math.PI / 2) {
-            console.log(this.pivot.rotation[axis])
             this.pivot.rotation[axis] = Math.PI / 2;
             this.isMoving = false
             this.#animComplete()
         } else if (this.pivot.rotation[axis] <= Math.PI / -2) {
-            console.log(this.pivot.rotation[axis])
             this.pivot.rotation[axis] = Math.PI / -2;
             this.isMoving = false
             this.#animComplete()
@@ -64,7 +62,6 @@ export class CubeRender{
         fetchCubeData()
         .then(cubeData => {
             this.cubeData = cubeData;
-            console.log("FETCHED:", this.cubeData.faces['upper']);
             this.#redrawCube(); 
         });
     }
@@ -80,14 +77,15 @@ export class CubeRender{
     }
 
     // Attach cubies to the pivot once before starting the animation
-    #attachCubiesupperivot(face){
+    #attachCubiesToPivot(face){
         this.pivot.clear();
         const [axis, coordinate] = FACE_AXIS[face]
         // Add cubies to active group, Temporary
         for (let i = 0; i < this.allCubies.length ; i += 1) {
             const cubie = this.allCubies[i]
-            const position = cubie.position
-            if (this.pivot.children.length != 9 && position[axis] == coordinate){
+            const position = cubie.position;
+            if (this.pivot.children.length != 9 && position[axis] == coordinate + (coordinate*GAP)){
+                console.log("ANI")
                 this.pivot.add(cubie)
             }
         }
@@ -115,7 +113,7 @@ export class CubeRender{
             const material = new THREE.MeshPhongMaterial({ vertexColors: true });
             const cubie = new THREE.Mesh(geometry, material);
 
-            cubie.position.set(...position);
+            cubie.position.set(...position.map(coord => coord * (1 + GAP)));
             this.scene.add(cubie);
 
             return cubie;
@@ -154,21 +152,10 @@ export class CubeRender{
             geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
         };
 
-        // Adds edges to a cubie
-        const addEdgesToCubie = (cubie, position) => {
-            const edges = new THREE.EdgesGeometry(cubie.geometry);
-            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: '#000000' }));
-            cubie.castShadow = true;
-            cubie.receiveShadow = true;
-            line.position.set(...position);
-            cubie.attach(line);
-        };
-
         const cubie = createCubieMesh(position);
         const colors = generateCubieColors(position);
 
         setCubieColors(cubie.geometry, colors);
-        addEdgesToCubie(cubie, position);
 
         this.allCubies.push(cubie);
     };
