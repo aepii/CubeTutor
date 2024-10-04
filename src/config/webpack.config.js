@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    entry: './tests/static/js/cube_render.js', // Adjust this path to point to your main JavaScript file
+    entry: './tests/static/js/app.js', // Adjust this path to point to your main JavaScript file
     output: {
         filename: 'bundle.js', // The name of the output file
         path: path.resolve(__dirname, 'static/js'), // Adjust this path as needed to your static directory

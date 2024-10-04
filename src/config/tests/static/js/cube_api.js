@@ -9,7 +9,7 @@ export const fetchCubeData = async () => {
 };
 
 // Function to rotate the cube
-export const rotateCube = async (face, clockwise) => {
+export const callCubeRotation = async (face, clockwise) => {
     try {
         const response = await fetch('/api/cube/rotate/', {
             method: 'POST',
