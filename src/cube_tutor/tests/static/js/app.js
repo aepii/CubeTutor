@@ -39,7 +39,6 @@ let isMoving = false;
 fetchCubeData()
 .then(cubeData => {
     cubeRender = new CubeRender(scene, cubeData);
-    console.log(cubeRender);
     cubeRender.createCube();
 });
 

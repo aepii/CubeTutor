@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center vh-200">
+        <div class="d-flex justify-content-between gap-3 w-200"> 
+            <a class="btn btn-primary" href="{% url 'render_cube' %}" role="button">Enter</a>
+            <a class="btn btn-primary" href="#" role="button">Scan</a>
+            <a class="btn btn-primary" href="#" role="button">Import</a>
+        </div>
+    </div>
+{% endblock %}
