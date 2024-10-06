@@ -39,6 +39,9 @@ class CubeRotationsAPI(APIView):
             serializer = CubeSerializer({'faces': cube.faces})
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({'error': 'Invalid rotation data'}, status=status.HTTP_400_BAD_REQUEST)
-    
+
+def home(request):
+    return render(request, 'index.html')
+
 def render_cube(request):
-    return render(request, 'cube_template.html')
+    return render(request, 'playground.html')

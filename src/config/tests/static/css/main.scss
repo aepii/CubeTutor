@@ -1,0 +1,34 @@
+@import "~bootstrap/scss/bootstrap";
+
+$mynewcolor: #0a5750;
+
+.btn-primary {
+    @include button-variant(
+        $mynewcolor, 
+        darken($mynewcolor, 7.5%), 
+        darken($mynewcolor, 10%), 
+        lighten($mynewcolor, 5%), 
+        lighten($mynewcolor, 10%), 
+        darken($mynewcolor, 30%)
+    );
+    color: #fff; 
+}
+
+html, body {
+    height: 100%; /* Full viewport height */
+    margin: 0;
+    overflow: hidden; /* Prevent scrolling */
+  }
+  
+  body {
+    display: flex;
+    flex-direction: column; /* Layout: navbar at top, content below */
+  }
+  
+  .container {
+    flex-grow: 1; /* Take up remaining space below navbar */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  

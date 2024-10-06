@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {KEY_TO_FACE} from './cube_constants.js';
 import {CubeRender} from './cube_render.js';
 import {fetchCubeData} from './cube_api.js';

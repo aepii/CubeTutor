@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 
-export const GAP = .04;
+export const GAP = .05;
 
 export const VALUE_TO_COLOR = {
-    0: new THREE.Color("gray"),
+    0: new THREE.Color(0x232b2b),
     1: new THREE.Color("green"),
     2: new THREE.Color("blue"),
     3: new THREE.Color("orange"),

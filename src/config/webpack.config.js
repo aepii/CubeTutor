@@ -1,29 +1,31 @@
 const path = require('path');
 
 module.exports = {
-    entry: './tests/static/js/app.js', // Adjust this path to point to your main JavaScript file
-    output: {
-        filename: 'bundle.js', // The name of the output file
-        path: path.resolve(__dirname, 'static/js'), // Adjust this path as needed to your static directory
+    entry: {
+        app: './tests/static/js/app.js',
+        index: './tests/static/js/index.js'
     },
-    resolve: {
-        alias: {
-            three: path.resolve(__dirname, '/node_modules/three'), // Resolves 'three' to the correct path
-        },
-        extensions: ['.js'],
+    output: {
+        filename: '[name].bundle.js', // This will create app.bundle.js and styles.bundle.js
+        path: path.resolve(__dirname, 'static/js'), // Adjust this path as needed to your static directory
     },
     module: {
         rules: [
             {
                 test: /\.js$/, // Transpile JavaScript files
-                exclude: /node_modules/, // Exclude the node_modules directory
+                exclude: /node_modules/,
                 use: {
-                    loader: 'babel-loader', // If you are using Babel, ensure you have it installed
+                    loader: 'babel-loader', // If you are using Babel
                 },
             },
+            {
+                test: /\.scss$/,
+                use: [
+                  "style-loader", //3. Inject styles into DOM
+                  "css-loader", //2. Turns css into commonjs
+                  "sass-loader" //1. Turns sass into css
+                ]
+            }
         ],
-    },
-    resolve: {
-        extensions: ['.js'], // Resolves extensions when importing
     },
 };
