@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {CSS2DRenderer} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {KEY_TO_FACE} from './cube_constants.js';
 import {CubeRender} from './cube_render.js';
@@ -31,6 +32,10 @@ scene.add(directionalLight);
 // Set up controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enablePan = false
+
+// Set up info
+const textRenderer = new CSS2DRenderer()
+console.log(textRenderer);
 
 let cubeRender;
 let isMoving = false;
