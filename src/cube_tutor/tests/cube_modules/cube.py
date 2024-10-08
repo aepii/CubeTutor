@@ -2,20 +2,17 @@ import numpy
 
 class Cube:
 
-    FACE_NAMES = ['front', 'back', 'left', 'right', 'upper', 'lower']
-
     def __init__(self, empty=True):
         self.faces = {}
-
+        face_names = ['front', 'back', 'left', 'right', 'upper', 'lower']
         if empty:
-            for face in Cube.FACE_NAMES:
+            for face in face_names:
                 self.faces[face] = numpy.zeros((3, 3), dtype=int)
         else:
-            for face in Cube.FACE_NAMES:
+            for face in face_names:
                 self.set_face(face)
 
     def set_face(self, face, entry=None):
-
         default_matrices = {
             'front': numpy.full((3, 3), fill_value=1, dtype=int),
             'back': numpy.full((3, 3), fill_value=2, dtype=int),
@@ -31,121 +28,91 @@ class Cube:
             self.faces[face] = entry
 
     def rotate_face(self, face, clockwise=True):
-        print(face, clockwise)
         if clockwise:
-
+            self.faces[face] = numpy.rot90(self.faces[face], 1, (1,0)) 
             if face == "upper":
-
                 front_prev = self.faces['front'].copy()
-
-                self.faces['upper'] = numpy.rot90(self.faces['upper'], 1, (1, 0))
-
                 self.faces['front'][0] = self.faces['right'][0]
                 self.faces['right'][0] = self.faces['back'][0]
                 self.faces['back'][0] = self.faces['left'][0]
                 self.faces['left'][0] = front_prev[0]
 
             elif face == "lower":
-
                 front_prev = self.faces['front'].copy()
-
-                self.faces['lower'] = numpy.rot90(self.faces['lower'], 1, (1, 0))
-
                 self.faces['front'][2] = self.faces['left'][2]
                 self.faces['left'][2] = self.faces['back'][2]
                 self.faces['back'][2] = self.faces['right'][2]
                 self.faces['right'][2] = front_prev[2]
-
             elif face == "left":
-
                 front_prev = self.faces['front'].copy()
-
-                self.faces['left'] = numpy.rot90(self.faces['left'], 1, (1, 0))
-
                 self.faces['front'][:, 0] = self.faces['upper'][:, 0]
                 self.faces['upper'][:, 0] = self.faces['back'][::-1, 2]
                 self.faces['back'][:, 2] = self.faces['lower'][::-1, 0]
                 self.faces['lower'][:, 0] = front_prev[:, 0]
-
             elif face == "right":
-
                 front_prev = self.faces['front'].copy()
-
-                self.faces['right'] = numpy.rot90(self.faces['right'], 1, (1, 0))
-
                 self.faces['front'][:, 2] = self.faces['lower'][:, 2]
                 self.faces['lower'][:, 2] = self.faces['back'][::-1, 0]
                 self.faces['back'][:, 0] = self.faces['upper'][::-1, 2]
                 self.faces['upper'][:, 2] = front_prev[:, 2]
 
             elif face == "front":
-
                 upper_prev = self.faces['upper'].copy()
-
-                self.faces['front'] = numpy.rot90(self.faces['front'], 1, (1, 0))
-
                 self.faces['upper'][2] = self.faces['left'][::-1, 2]
                 self.faces['left'][:, 2] = self.faces['lower'][0]
                 self.faces['lower'][0] = self.faces['right'][::-1, 0]
                 self.faces['right'][:, 0] = upper_prev[2]
 
             elif face == "back":
-
                 upper_prev = self.faces['upper'].copy()
-
-                self.faces['back'] = numpy.rot90(self.faces['back'], 1, (1, 0))
-
                 self.faces['upper'][0] = self.faces['right'][:, 2]
                 self.faces['right'][:, 2] = self.faces['lower'][2, ::-1]
                 self.faces['lower'][2] = self.faces['left'][:, 0]
                 self.faces['left'][:, 0] = upper_prev[0, ::-1]
 
-
         elif not clockwise:
-            self.faces[face] = numpy.rot90(self.faces[face], 1, (0,1))  # Rotate the face counter-clockwise
-
-            if face == "upper":  # 'U' face
+            self.faces[face] = numpy.rot90(self.faces[face], 1, (0,1)) 
+            if face == "upper":  
                 front_prev = self.faces['front'].copy()
-                self.faces['front'][0, :] = self.faces['right'][0, :]
-                self.faces['right'][0, :] = self.faces['back'][0, :]
-                self.faces['back'][0, :] = self.faces['left'][0, :]
-                self.faces['left'][0, :] = front_prev[0, :]
+                self.faces['front'][0] = self.faces['right'][0]
+                self.faces['right'][0] = self.faces['back'][0]
+                self.faces['back'][0] = self.faces['left'][0]
+                self.faces['left'][0] = front_prev[0]
 
-            elif face == "lower":  # 'D' face
+            elif face == "lower":  
                 front_prev = self.faces['front'].copy()
-                self.faces['front'][2, :] = self.faces['left'][2, :]
-                self.faces['left'][2, :] = self.faces['back'][2, :]
-                self.faces['back'][2, :] = self.faces['right'][2, :]
-                self.faces['right'][2, :] = front_prev[2, :]
+                self.faces['front'][2] = self.faces['left'][2]
+                self.faces['left'][2] = self.faces['back'][2]
+                self.faces['back'][2] = self.faces['right'][2]
+                self.faces['right'][2] = front_prev[2]
 
-            elif face == "left":  # 'L' face
+            elif face == "left": 
                 front_prev = self.faces['front'].copy()
                 self.faces['front'][:, 0] = self.faces['lower'][:, 0]
                 self.faces['lower'][:, 0] = self.faces['back'][::-1, 2]
                 self.faces['back'][:, 2] = self.faces['upper'][::-1, 0]
                 self.faces['upper'][:, 0] = front_prev[:, 0]
 
-            elif face == "right":  # 'R' face
+            elif face == "right": 
                 front_prev = self.faces['front'].copy()
                 self.faces['front'][:, 2] = self.faces['upper'][:, 2]
                 self.faces['upper'][:, 2] = self.faces['back'][::-1, 0]
                 self.faces['back'][:, 0] = self.faces['lower'][::-1, 2]
                 self.faces['lower'][:, 2] = front_prev[:, 2]
 
-            elif face == "front":  # 'F' face
+            elif face == "front":  
                 upper_prev = self.faces['upper'].copy()
                 self.faces['upper'][2, :] = self.faces['right'][:, 0]
                 self.faces['right'][:, 0] = self.faces['lower'][0, ::-1]
                 self.faces['lower'][0, :] = self.faces['left'][:, 2]
                 self.faces['left'][:, 2] = upper_prev[2, ::-1]
 
-            elif face == "back":  # 'B' face
+            elif face == "back":
                 upper_prev = self.faces['upper'].copy()
                 self.faces['upper'][0, :] = self.faces['left'][::-1, 0]
                 self.faces['left'][:, 0] = self.faces['lower'][2, :]
                 self.faces['lower'][2, :] = self.faces['right'][::-1, 2]
                 self.faces['right'][:, 2] = upper_prev[0, ::-1]
-
 
     def __repr__(self):
         value_to_color = {
