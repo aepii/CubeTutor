@@ -14,21 +14,22 @@ $mynewcolor: #0a5750;
     color: #fff; 
 }
 
-html, body {
-    height: 100%; /* Full viewport height */
+/*
+  html, body {
+    height: 100%; 
     margin: 0;
-    overflow: hidden; /* Prevent scrolling */
+    overflow: hidden; 
   }
   
   body {
     display: flex;
-    flex-direction: column; /* Layout: navbar at top, content below */
+    flex-direction: column; 
   }
   
   .container {
-    flex-grow: 1; /* Take up remaining space below navbar */
+    flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  
+  } 
+*/

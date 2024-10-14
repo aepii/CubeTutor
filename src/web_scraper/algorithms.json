@@ -1283,7 +1283,7 @@
             "Alg1": "R2 U R' U R' U' R U' R2 D U' R' U R D'",
             "Alg2": "R2 u R' U R' U' R u' R2 F' U F",
             "Alg3": "R2 u R' U R' U' R u' R2 y' R' U R",
-            "Alg4": "D' R2 U R' U R' U' R U' R2 U' D R' U R",
+            "Alg4": "y R U R' F' R U R' U' R' F R U' R' F R2 U' R' U' R U R' F'",
             "Colors": "ogbbbbbbbgooggggggrbrrrrrrrbrgooooooyyyyyyyyy"
         },
         "Gb": {

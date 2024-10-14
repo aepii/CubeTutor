@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'users',
     'tests'
 ]
 
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'cube_tutor.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,8 +79,12 @@ WSGI_APPLICATION = 'cube_tutor.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cubetutor',
+        'USER': 'root',
+        'PASSWORD': 'Root@123',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 

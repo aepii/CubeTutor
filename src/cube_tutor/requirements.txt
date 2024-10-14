@@ -4,3 +4,5 @@ numpy
 beautifulsoup4
 requests
 opencv-python
+mysql-connector-python
+mysqlclient
