@@ -2,8 +2,8 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        app: './tests/static/js/app.js',
-        index: './tests/static/js/index.js'
+        app: './playground/static/js/app.js',
+        index: './playground/static/js/index.js'
     },
     output: {
         filename: '[name].bundle.js', // This will create app.bundle.js and styles.bundle.js

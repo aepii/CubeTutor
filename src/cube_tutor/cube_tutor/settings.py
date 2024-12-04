@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'users',
-    'tests'
+    'playground',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -126,7 +126,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),  # Adjust the path as needed
-    os.path.join(BASE_DIR, 'tests/static')  # Adjust the path as needed
+    os.path.join(BASE_DIR, 'playground/static'),  # Adjust the path as needed
+    os.path.join(BASE_DIR, 'users/static')  # Adjust the path as needed
 ]
 
 # Default primary key field type
