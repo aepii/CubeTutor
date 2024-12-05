@@ -6,6 +6,8 @@ CubeTutor is an application designed to assist users with the Rubik’s Cube, pr
 
 ## Technologies Used
 
+![Django](https://img.shields.io/badge/Django-0d6eaf?logo=django&logoColor=white) ![Django REST Framework](https://img.shields.io/badge/Django%20REST%20Framework-0077B5?logo=django&logoColor=white) ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black) ![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white) ![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?logo=opencv&logoColor=white) ![BeautifulSoup](https://img.shields.io/badge/BeautifulSoup-5C0B3C?logo=python&logoColor=white) ![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
+
 - **Frontend**: 
   - Django templates for rendering HTML and managing the UI.
   - JavaScript for interactivity, using Three.js for 3D visualization.
@@ -16,7 +18,8 @@ CubeTutor is an application designed to assist users with the Rubik’s Cube, pr
   - Numpy
   - OpenCV
   - BeautifulSoup
- 
+  - SQLite
+
 ## Core Functionality
 
 1. **Django Backend**:
@@ -24,7 +27,8 @@ CubeTutor is an application designed to assist users with the Rubik’s Cube, pr
    - Processes cube state data and algorithms.
 
 2. **Frontend**:
-   - User interface built with Django HTML templates for dynamic content rendering and seamless integration with the backend and SASS to make the styles more maintainable and modular.
+   - User interface built with Django HTML templates for dynamic content rendering and seamless integration with the backend.
+   - Uses SASS for more maintainable and modular styles.
    - Displays a 3D model of the Rubik's Cube using Three.js.
 
 ## Workflow
@@ -65,10 +69,10 @@ Ensure you have the following installed:
 ---
 
 ### Installing Dependencies
+
 1. Install Python dependencies:
    ```bash
    pip install -r requirements.txt
-   ```
 2. Install Node.js dependencies:
    ```bash
    npm install
