@@ -55,19 +55,80 @@ CubeTutor is an application designed to assist users with the Rubik’s Cube, pr
 
 ## Getting Started
 
+Follow these instructions to set up and run the project.
+
+---
+
+### Prerequisites
+Ensure you have the following installed:
+- Python 3.x
+- Node.js
+- pip (Python package manager)
+- npm (Node.js package manager)
+
+---
+
 ### Installing Dependencies
-`pip install -r requirements.txt`
-`npm install`
+1. Install Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Install Node.js dependencies:
+   ```bash
+   npm install
+   ```
 
-### Setting up Database
-`cd db`
-`python main.py`
+---
 
-### Setting up Web Scraper
-`cd web_scraper`
-`python main.py`
+### Setting Up the Database
+1. Navigate to the `db` directory:
+   ```bash
+   cd db
+   ```
+2. Run the database setup script:
+   ```bash
+   python main.py
+   ```
 
-### Running Server
-`cd cube_tutor`
-`python manage.py makemigrations`
-`python manage.py runserver`
+---
+
+### Setting Up the Web Scraper
+1. Navigate to the `web_scraper` directory:
+   ```bash
+   cd web_scraper
+   ```
+2. Run the web scraper setup script:
+   ```bash
+   python main.py
+   ```
+
+---
+
+### Running the Server
+1. Navigate to the `cube_tutor` directory:
+   ```bash
+   cd cube_tutor
+   ```
+2. Apply database migrations:
+   ```bash
+   python manage.py makemigrations
+   ```
+3. Start the development server:
+   ```bash
+   python manage.py runserver
+   ```
+
+---
+
+### Accessing the Application
+Once the server is running, open your web browser and navigate to:
+```
+http://127.0.0.1:8000/
+```
+
+---
+
+### Notes
+- Ensure the database and web scraper setup steps are completed before starting the server.
+- For additional configurations or troubleshooting, please refer to the project documentation.
+---
