@@ -28,7 +28,7 @@ export class CubeRender{
             this.#attachCubiesToPivot(face);
             this.isMoving = true
             this.currentFaceMoving = face
-            this.isClockwise = direction ? 1 : 0
+            this.isClockwise = direction ? 1 : -1
             return true
         } else {
             return false
@@ -37,6 +37,7 @@ export class CubeRender{
 
     // Temporary Rotation only rotates z axis
     animRotate(){
+        console.log("Anim Rotate");
         const [axis, coordinate] = FACE_AXIS[this.currentFaceMoving];
         if (this.pivot.rotation[axis] >= Math.PI / 2) {
             this.pivot.rotation[axis] = Math.PI / 2;
@@ -49,7 +50,6 @@ export class CubeRender{
         } else {
             this.pivot.rotation[axis] += (-this.isClockwise * coordinate * this.rotationSpeed);
         }
-
         this.pivot.updateMatrixWorld();
         
         return this.isMoving;
@@ -57,7 +57,7 @@ export class CubeRender{
 
     async #animComplete() {
         // Wait for cube rotation to complete
-        await callCubeRotation(this.currentFaceMoving, true); 
+        await callCubeRotation(this.currentFaceMoving, this.isClockwise === 1 ? true : false); 
         
         fetchCubeData()
         .then(cubeData => {
