@@ -6,7 +6,7 @@ CubeTutor is an application designed to assist users with the Rubik’s Cube, pr
 
 ## Technologies Used
 
-![Django](https://img.shields.io/badge/Django-0d6eaf?logo=django&logoColor=white) ![Django REST Framework](https://img.shields.io/badge/Django%20REST%20Framework-0077B5?logo=django&logoColor=white) ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black) ![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white) ![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?logo=opencv&logoColor=white) ![BeautifulSoup](https://img.shields.io/badge/BeautifulSoup-5C0B3C?logo=python&logoColor=white) ![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
+![Django](https://img.shields.io/badge/Django-0d6eaf?logo=django&logoColor=white) ![Django REST Framework](https://img.shields.io/badge/Django%20REST%20Framework-0077B5?logo=django&logoColor=white) ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black) ![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white) ![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white) ![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?logo=opencv&logoColor=white) ![BeautifulSoup](https://img.shields.io/badge/BeautifulSoup-5C0B3C?logo=python&logoColor=white) ![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
 
 - **Frontend**: 
   - Django templates for rendering HTML and managing the UI.
@@ -15,7 +15,7 @@ CubeTutor is an application designed to assist users with the Rubik’s Cube, pr
 - **Backend**: 
   - Django
   - Django REST Framework
-  - Numpy
+  - NumPy
   - OpenCV
   - BeautifulSoup
   - SQLite
@@ -34,7 +34,7 @@ CubeTutor is an application designed to assist users with the Rubik’s Cube, pr
 ## Workflow
 
 1. **Cube Representation**:
-   - Implements a Python class for the Rubik’s Cube, managing the cube’s state and rotation logic.
+   - Implements a Python class for the Rubik’s Cube, managing the cube’s state and rotation logic, utilizing NumPy for the data structure and matrix manipulation.
 
 2. **Data Flow**:
    - **JavaScript**: Sends requests to the Django backend via the DRF API to receive the cube object and its current state.
