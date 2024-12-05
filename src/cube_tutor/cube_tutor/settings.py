@@ -127,7 +127,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),  # Adjust the path as needed
     os.path.join(BASE_DIR, 'playground/static'),  # Adjust the path as needed
-    os.path.join(BASE_DIR, 'users/static')  # Adjust the path as needed
+    #os.path.join(BASE_DIR, 'users/static')  # Adjust the path as needed
 ]
 
 # Default primary key field type

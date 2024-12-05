@@ -4,22 +4,22 @@ import {VALUE_TO_COLOR, FACE_GENERATION_ORDER, CUBE_MAP, FACE_AXIS, GAP} from '.
 
 export class CubeRender{
     constructor(scene, cubeData){
-        this.scene = scene;
-        this.cubeData = cubeData;
+        this.scene = scene; // Hold the Three.js scene
+        this.cubeData = cubeData; // Hold serializd cube data
 
-        this.currentFaceMoving;
-        this.isClockwise;
+        this.currentFaceMoving; // 
+        this.isClockwise; // 1: Clockwise, -1: Counterclockwise
 
-        this.rotationSpeed = 0.01
-        this.allCubies = [];
-        this.pivot = new THREE.Object3D();
-        this.isMoving = false;
+        this.rotationSpeed = 0.01 // Animation rotation speed
+        this.allCubies = []; // Hold all Three.js cubies
+        this.pivot = new THREE.Object3D(); // Create a pivot point, responsible for rotating a face.
+        this.isMoving = false; // Flag if an animation is in process
     };
 
     // Creates a cube, which holds 3 planes/27 cubies
     createCube(){
         for (let i = 0; i < 3; i+=1){
-            this.#createPlane(i);
+            this.#createPlane(i); 
         }
     };
 
@@ -55,9 +55,10 @@ export class CubeRender{
         return this.isMoving;
     };
 
+    // Asynchronous task when animation is complete
     async #animComplete() {
         // Wait for cube rotation to complete
-        await callCubeRotation(this.currentFaceMoving, this.isClockwise === 1 ? true : false); 
+        await callCubeRotation(this.currentFaceMoving, this.isClockwise === 1 ? true : false); // If isClockwise is 1 pass true, otherwise pass false.
         
         fetchCubeData()
         .then(cubeData => {
@@ -85,7 +86,6 @@ export class CubeRender{
             const cubie = this.allCubies[i]
             const position = cubie.position;
             if (this.pivot.children.length != 9 && position[axis] == coordinate + (coordinate*GAP)){
-                console.log("ANI")
                 this.pivot.add(cubie)
             }
         }
@@ -113,7 +113,7 @@ export class CubeRender{
             const material = new THREE.MeshPhongMaterial({ vertexColors: true });
             const cubie = new THREE.Mesh(geometry, material);
 
-            cubie.position.set(...position.map(coord => coord * (1 + GAP)));
+            cubie.position.set(...position.map(coord => coord * (1 + GAP))); // Add gaps between cubies.
             this.scene.add(cubie);
 
             return cubie;
@@ -125,8 +125,8 @@ export class CubeRender{
             const totalVertices = 36; // Each cubie has 6 vertices per face
             
             for (let i = 0; i < totalVertices; i += 6) {
-                const currentCubieFace = FACE_GENERATION_ORDER[Math.floor(i/6)];
-                const key = `(${position[0]},${position[1]},${position[2]})`;
+                const currentCubieFace = FACE_GENERATION_ORDER[Math.floor(i/6)]; // Each face has 6 vertices
+                const key = `(${position[0]},${position[1]},${position[2]})`; // Get the key which will determine value associated to face
                 const colorsDict = CUBE_MAP[key] || {};
                 const cubieFaceMapping = colorsDict[currentCubieFace];
 

@@ -66,11 +66,8 @@ document.addEventListener('keydown', (event) => {
     if (!isMoving){
         if (KEY_TO_FACE[keyPressed]  && cubeRender) { // Check if cubeRender is defined
             const face = KEY_TO_FACE[keyPressed]
-            console.log("DO MOVE")
             isMoving = cubeRender.doMove(face, isClockwise);
         } else if (keyPressed === "Enter"){
-            console.log("Update");
-            console.log(`Key ${keyPressed} was pressed.`);
             isClockwise = !isClockwise
             console.log(`${isClockwise}`);
         }

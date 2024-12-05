@@ -1,15 +1,14 @@
 import numpy
 
 class Cube:
-
-    def __init__(self, empty=True):
+    def __init__(self, empty=True): 
         self.faces = {}
         face_names = ['front', 'back', 'left', 'right', 'upper', 'lower']
-        if empty:
+        if empty: # If empty, set to initialize face as a 3x3 matrix holding zeros
             for face in face_names:
-                self.faces[face] = numpy.zeros((3, 3), dtype=int)
-        else:
-            for face in face_names:
+                self.faces[face] = numpy.zeros((3, 3), dtype=int) 
+        else: # If not empty, initialize face as a 3x3 matrix holding default values
+            for face in face_names: 
                 self.set_face(face)
 
     def set_face(self, face, entry=None):
@@ -22,9 +21,9 @@ class Cube:
             'lower': numpy.full((3, 3), fill_value=6, dtype=int)
         }
 
-        if entry is None:
+        if entry is None: # If no entry provided, set to default values
             self.faces[face] = default_matrices[face]
-        else:
+        else: # If entry is provided, set to entry values
             self.faces[face] = entry
 
     def rotate_face(self, face, clockwise=True):

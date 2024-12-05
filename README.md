@@ -54,3 +54,20 @@ CubeTutor is an application designed to assist users with the Rubik’s Cube, pr
 - **Testing**: Implement unit and integration tests to ensure components function as expected.
 
 ## Getting Started
+
+### Installing Dependencies
+`pip install -r requirements.txt`
+`npm install`
+
+### Setting up Database
+`cd db`
+`python main.py`
+
+### Setting up Web Scraper
+`cd web_scraper`
+`python main.py`
+
+### Running Server
+`cd cube_tutor`
+`python manage.py makemigrations`
+`python manage.py runserver`

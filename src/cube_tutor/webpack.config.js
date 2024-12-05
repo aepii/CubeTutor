@@ -6,7 +6,7 @@ module.exports = {
         index: './playground/static/js/index.js'
     },
     output: {
-        filename: '[name].bundle.js', // This will create app.bundle.js and styles.bundle.js
+        filename: '[name][contenthash].bundle.js', // This will create app.bundle.js and styles.bundle.js
         path: path.resolve(__dirname, 'static/js'), // Adjust this path as needed to your static directory
     },
     module: {

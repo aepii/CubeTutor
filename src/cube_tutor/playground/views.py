@@ -10,7 +10,6 @@ import numpy
 cube = Cube(empty=False)
 
 class CubeAPI(APIView):
-
     def get(self, request, format=None):
         print("GET", cube)
         serializer = CubeSerializer({'faces': cube.faces})
@@ -29,7 +28,6 @@ class CubeAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CubeRotationsAPI(APIView):
-
     def post(self, request, format=None):
         if 'face' and 'clockwise' in request.data:
             print(f"BEFORE LOGIC ROTATE: {cube}")
