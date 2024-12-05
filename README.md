@@ -13,22 +13,24 @@ CubeTutor is an application designed to assist users with the Rubik’s Cube, pr
 - **Backend**: 
   - Django
   - Django REST Framework
-
+  - Numpy
+  - OpenCV
+  - BeautifulSoup
+ 
 ## Core Functionality
 
 1. **Django Backend**:
    - Handles all API requests and responses.
    - Processes cube state data and algorithms.
-   - Utilizes Django models to store scraped algorithms and cube states.
 
 2. **Frontend**:
-   - User interface built with HTML and CSS.
+   - User interface built with Django HTML templates for dynamic content rendering and seamless integration with the backend and SASS to make the styles more maintainable and modular.
    - Displays a 3D model of the Rubik's Cube using Three.js.
 
 ## Workflow
 
 1. **Cube Representation**:
-   - Implements a Python class (OOP) for the Rubik’s Cube, managing the cube’s state and rotation logic.
+   - Implements a Python class for the Rubik’s Cube, managing the cube’s state and rotation logic.
 
 2. **Data Flow**:
    - **JavaScript**: Sends requests to the Django backend via the DRF API to receive the cube object and its current state.
@@ -46,12 +48,6 @@ CubeTutor is an application designed to assist users with the Rubik’s Cube, pr
 
 5. **Cube Scanning**:
    - **Python (OpenCV)**: Scans images of the physical Rubik’s Cube to determine its current state and sends this state to the Django backend for processing via the DRF API.
-
-## Additional Considerations
-
-- **User Accounts**: Implement user authentication to allow users to save favorite algorithms or track progress.
-- **Error Handling**: Ensure robust error handling in both frontend and backend to manage issues such as failed requests or invalid cube states.
-- **Testing**: Implement unit and integration tests to ensure components function as expected.
 
 ## Getting Started
 
