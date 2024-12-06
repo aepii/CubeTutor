@@ -11,7 +11,7 @@ const container = document.querySelector('.canvas-container');
 // Set up Scene and Camera
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x003632);
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight);
+const camera = new THREE.PerspectiveCamera(90, container.clientWidth / container.clientHeight);
 
 camera.position.x = 5 * Math.sin(Math.PI/4); // X position
 camera.position.y = 5 * Math.sin(Math.PI/6); // Y position
@@ -28,6 +28,7 @@ container.appendChild(renderer.domElement);
 window.addEventListener( 'resize', onWindowResize, false );
 function onWindowResize(){
     camera.aspect = container.clientWidth / container.clientHeight;
+    
     camera.updateProjectionMatrix();
 
     renderer.setSize( container.clientWidth, container.clientHeight );
