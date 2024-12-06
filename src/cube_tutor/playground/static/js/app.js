@@ -5,6 +5,9 @@ import {KEY_TO_FACE} from './cube_constants.js';
 import {CubeRender} from './cube_render.js';
 import {fetchCubeData} from './cube_api.js';
 
+// Select the container div
+const container = document.querySelector('.canvas-container');
+
 // Set up Scene and Camera
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x003632);
@@ -19,8 +22,16 @@ camera.lookAt(0, 0, 0);
 
 // Create and setup Renderer
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+renderer.setSize(container.clientWidth, container.clientHeight);
+container.appendChild(renderer.domElement);
+
+window.addEventListener( 'resize', onWindowResize, false );
+function onWindowResize(){
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( container.clientWidth, container.clientHeight );
+}
 
 // Set up lighting
 const ambientLight = new THREE.AmbientLight("white", Math.PI/1.5);

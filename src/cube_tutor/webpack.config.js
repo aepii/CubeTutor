@@ -3,10 +3,10 @@ const path = require('path');
 module.exports = {
     entry: {
         app: './playground/static/js/app.js',
-        index: './playground/static/js/index.js'
+        bootstrap: './static/js/bootstrap.js',
     },
     output: {
-        filename: '[name][contenthash].bundle.js', // This will create app.bundle.js and styles.bundle.js
+        filename: '[name].bundle.js', // This will create app.bundle.js and styles.bundle.js
         path: path.resolve(__dirname, 'static/js'), // Adjust this path as needed to your static directory
     },
     module: {

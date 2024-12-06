@@ -1,0 +1,21 @@
+@import "~bootstrap/scss/bootstrap";
+
+$main-theme: #0a5750;
+
+.btn-primary {
+    @include button-variant(
+        $main-theme, 
+        darken($main-theme, 7.5%), 
+        darken($main-theme, 10%), 
+        lighten($main-theme, 5%), 
+        lighten($main-theme, 10%), 
+        darken($main-theme, 30%)
+    );
+    color: #fff; 
+}
+
+.canvas-container {
+    width: 100%;
+    height: calc(100vh - 56px);
+    overflow: hidden; 
+}

@@ -1,6 +1,6 @@
 <!doctype html>
 {% load static %}
-<script type="module" src="{% static 'js/index.bundle.js' %}"></script>
+<script type="module" src="{% static 'js/bootstrap.bundle.js' %}"></script>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -9,7 +9,7 @@
   </head>
   <body>
     {% include 'navbar.html' %}
-    <div class="container">
+    <div class="main-container">
       {% block content %}
       {% endblock %}
     </div>
