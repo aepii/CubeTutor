@@ -10,7 +10,6 @@ const container = document.querySelector('.canvas-container');
 
 // Set up Scene and Camera
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x003632);
 const camera = new THREE.PerspectiveCamera(90, container.clientWidth / container.clientHeight);
 
 camera.position.x = 5 * Math.sin(Math.PI/4); // X position
@@ -21,7 +20,7 @@ camera.position.z = 5 * Math.cos(Math.PI/4); // Z position
 camera.lookAt(0, 0, 0);
 
 // Create and setup Renderer
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({ alpha: true } );
 renderer.setSize(container.clientWidth, container.clientHeight);
 container.appendChild(renderer.domElement);
 

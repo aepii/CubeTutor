@@ -1,6 +1,10 @@
 @import "~bootstrap/scss/bootstrap";
 
-$main-theme: #0a5750;
+$main-theme: #10504a;
+
+.navbar {
+    background-color: $main-theme;
+}
 
 .btn-primary {
     @include button-variant(
@@ -18,4 +22,5 @@ $main-theme: #0a5750;
     width: 100%;
     height: calc(100vh - 56px);
     overflow: hidden; 
+    background-color: darken($main-theme, 7.5%);
 }
