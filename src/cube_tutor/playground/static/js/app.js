@@ -46,26 +46,29 @@ controls.enablePan = false
 
 // Set up info
 const textRenderer = new CSS2DRenderer()
-console.log(textRenderer);
 
 let cubeRender;
 let isMoving = false;
 let isClockwise = true;
 
 // Setup Cube
-fetchCubeData()
-.then(cubeData => {
+fetchCubeData().then(cubeData => {
     cubeRender = new CubeRender(scene, cubeData);
     cubeRender.createCube();
 });
 
 // Render scene
-const render = function () {
-    requestAnimationFrame(() => render());
-    directionalLight.position.copy(camera.position);
+const render = function (time) {
+    requestAnimationFrame(render);
+
+    const deltaTime = time / 1000 // time is in milliseconds, so divide by 1000 to convert to seconds
+
+    // Call animation with deltaTime
     if (isMoving){
-        isMoving = cubeRender.animRotate()
+        isMoving = cubeRender.animateRotate(deltaTime)
     }
+
+    directionalLight.position.copy(camera.position);
     controls.update();
     renderer.render(scene, camera);
 };
@@ -77,11 +80,12 @@ document.addEventListener('keydown', (event) => {
     if (!isMoving){
         if (KEY_TO_FACE[keyPressed]  && cubeRender) { // Check if cubeRender is defined
             const face = KEY_TO_FACE[keyPressed]
-            isMoving = cubeRender.doMove(face, isClockwise);
-        } else if (keyPressed === "Enter"){
-            isClockwise = !isClockwise
-            console.log(`${isClockwise}`);
+            isMoving = cubeRender.setupMove(face, isClockwise);
         }
+    }
+    
+    if (keyPressed === "Enter"){
+        isClockwise = !isClockwise
     }
 });
 

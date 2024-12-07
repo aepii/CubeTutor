@@ -1,14 +1,16 @@
-import * as THREE from 'three';
-import {fetchCubeData, callCubeRotation} from './cube_api.js'; 
-import {VALUE_TO_COLOR, FACE_GENERATION_ORDER, CUBE_MAP, FACE_AXIS, GAP} from './cube_constants.js';
+import * as THREE from 'three'; // Import Three.js module
+import {fetchCubeData, callCubeRotation} from './cube_api.js'; // Import cube API
+import {VALUE_TO_COLOR, FACE_GENERATION_ORDER, CUBE_MAP, FACE_AXIS, GAP} from './cube_constants.js'; // Import cube constants
 
+// CubeRender class responsible for rendering the cube
 export class CubeRender{
+    // Construct CubeRender given scene and cubeData
     constructor(scene, cubeData){
         this.scene = scene; // Hold the Three.js scene
         this.cubeData = cubeData; // Hold serializd cube data
 
-        this.currentFaceMoving; // 
-        this.isClockwise; // 1: Clockwise, -1: Counterclockwise
+        this.currentFaceMoving; // Hold face currently being moved
+        this.isClockwise; // Hold whether the move should be: 1: Clockwise, -1: Counterclockwise
 
         this.rotationSpeed = 0.01 // Animation rotation speed
         this.allCubies = []; // Hold all Three.js cubies
@@ -23,76 +25,84 @@ export class CubeRender{
         }
     };
 
-    doMove(face, direction){
+    // Set up the cube for a move and return a flag indicating if the cube is moving
+    setupMove(face, direction){
+        // If the cube is not already moving, set up the movement flags and pivot
         if (!this.isMoving) {
-            this.#attachCubiesToPivot(face);
-            this.isMoving = true
-            this.currentFaceMoving = face
-            this.isClockwise = direction ? 1 : -1
-            return true
-        } else {
-            return false
+            this.isMoving = true; // Mark the cube as moving
+            this.currentFaceMoving = face; // Set the face currently being moved
+            this.isClockwise = direction ? 1 : -1; // Set the direction of movement (clockwise or counter-clockwise)
+            this.#attachCubiesToPivot(face); // Attach the cubies to the pivot based on the face
         }
+        return this.isMoving; // Return the movement status of the cube
     };
 
-    // Temporary Rotation only rotates z axis
-    animRotate(){
-        console.log("Anim Rotate");
-        const [axis, coordinate] = FACE_AXIS[this.currentFaceMoving];
-        if (this.pivot.rotation[axis] >= Math.PI / 2) {
-            this.pivot.rotation[axis] = Math.PI / 2;
-            this.isMoving = false
-            this.#animComplete()
-        } else if (this.pivot.rotation[axis] <= Math.PI / -2) {
-            this.pivot.rotation[axis] = Math.PI / -2;
-            this.isMoving = false
-            this.#animComplete()
-        } else {
-            this.pivot.rotation[axis] += (-this.isClockwise * coordinate * this.rotationSpeed);
+    // Perform animation on cube
+    animateRotate(){
+        const [axis, direction] = FACE_AXIS[this.currentFaceMoving]; // Get axis and direction from face currently being moved
+        // If the rotation is greatero Math.PI / 2, stop the animation
+        if (this.pivot.rotation[axis] > Math.PI / 2) {
+            this.pivot.rotation[axis] = Math.PI / 2; // Set to exact limit
+            this.isMoving = false // Set is moving flag to false
+            this.#animComplete() // Call animation complete
+        } 
+        // If the rotation is less than to Math.PI / -2, stop the animation
+        else if (this.pivot.rotation[axis] < Math.PI / -2) {
+            this.pivot.rotation[axis] = Math.PI / -2; // Set to exact limit
+            this.isMoving = false // Set is moving flag to false
+            this.#animComplete() // Call animation complete
+        } 
+        else {
+            this.pivot.rotation[axis] += (-this.isClockwise * direction * this.rotationSpeed); // Apply rotation speed
         }
-        this.pivot.updateMatrixWorld();
+        this.pivot.updateMatrixWorld(); // Update the pivot's world matrix
         
-        return this.isMoving;
+        return this.isMoving; // Return whether cube is still moving or not
     };
 
     // Asynchronous task when animation is complete
     async #animComplete() {
-        // Wait for cube rotation to complete
-        await callCubeRotation(this.currentFaceMoving, this.isClockwise === 1 ? true : false); // If isClockwise is 1 pass true, otherwise pass false.
-        
-        fetchCubeData()
-        .then(cubeData => {
-            this.cubeData = cubeData;
-            this.#redrawCube(); 
-        });
+        try {
+            // Wait for cube rotation to complete and store the cubeData
+            const cubeData = await callCubeRotation(this.currentFaceMoving, this.isClockwise === 1 ? true : false);
+            this.cubeData = cubeData; // Store cubeData
+            this.#redrawCube(); // Redraw the cube with updated data
+        } catch (error) {
+            console.error('Error completing animation:', error);
+        }
     }
-    
+
+    // Redraw the cube
     #redrawCube(){
+        // Remove all cubies from scene
         this.allCubies.forEach(cubie => {
             this.scene.remove(cubie);
         });
-        this.allCubies = [];
-        this.pivot.clear();
-        this.scene.remove(this.pivot);
-        this.createCube();
+        this.allCubies = []; // Empty cubie array
+        this.pivot.clear(); // Clear pivot
+        this.createCube(); // Recreate cube
     }
 
     // Attach cubies to the pivot once before starting the animation
     #attachCubiesToPivot(face){
-        this.pivot.clear();
-        const [axis, coordinate] = FACE_AXIS[face]
-        // Add cubies to active group, Temporary
-        for (let i = 0; i < this.allCubies.length ; i += 1) {
-            const cubie = this.allCubies[i]
+        const [axis, direction] = FACE_AXIS[face] // Get axis and direction from face currently being moved
+        
+        // Add cubies to active group
+        for (const cubie of this.allCubies) {
             const position = cubie.position;
-            if (this.pivot.children.length != 9 && position[axis] == coordinate + (coordinate*GAP)){
-                this.pivot.add(cubie)
+            // If the pivot already has 9 children, stop the loop early
+            if (this.pivot.children.length == 9) {
+                break;
+            }
+            // Add cubie to pivot if it matches the specified condition
+            if (position[axis] == direction + (direction * GAP)) {
+                this.pivot.add(cubie);
             }
         }
 
         this.pivot.position.set(0, 0, 0); // Make sure pivot is at the origin
-        this.pivot.rotation.set(0, 0, 0);
-        this.pivot.updateMatrixWorld();
+        this.pivot.rotation.set(0, 0, 0); // Set the pivot rotation to the origin
+        this.pivot.updateMatrixWorld(); // Update the pivot's world matrix
 
         this.scene.add(this.pivot); // Add pivot to the scene
     };

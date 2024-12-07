@@ -1,3 +1,4 @@
+
 export const fetchCubeData = async () => {
     console.log("FETCH API")
     try {
