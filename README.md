@@ -56,11 +56,18 @@ Ensure you have the following installed:
 
 ---
 
+### Setting Up Virtual Environment
+
+   ```bash
+   py -m venv .venv
+   .venv\Scripts\Activate
+   ```
+
 ### Installing Dependencies
 
 1. Install Python dependencies:
    ```bash
-   pip install -r requirements.txt
+   py -m pip install -r requirements.txt
 2. Install Node.js dependencies:
    ```bash
    npm install
