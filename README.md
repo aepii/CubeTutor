@@ -58,11 +58,15 @@ Ensure you have the following installed:
 
 ### Setting Up Virtual Environment
 
-   ```bash
+1. Create virtual environment:
+    ```bash
    py -m venv .venv
+   ```
+2. Activate virtual environment:
+   ```bash
    .venv\Scripts\Activate
    ```
-
+      
 ### Installing Dependencies
 
 1. Install Python dependencies:
