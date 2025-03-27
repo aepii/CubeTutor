@@ -1,7 +1,13 @@
+import FiberCanvas from "../components/FiberCanvas";
+import Navbar from "../components/Navbar";
+
 function PlaygroundPage() {
   return (
-    <h1>Hi</h1>
-  )
+    <div className="flex flex-col h-screen">
+      <Navbar />
+      <FiberCanvas />
+    </div>
+  );
 }
 
-export default PlaygroundPage
+export default PlaygroundPage;
